@@ -21,7 +21,13 @@ class GitHelper
     //	];
     public static function getTags($repo)
     {
-        $gitTags = static::runProcess('git ls-remote --tags --heads ' . escapeshellarg($repo));
+        $cmd = 'git ls-remote --tags --heads ' . escapeshellarg($repo);
+        if (is_file($f = __DIR__ . '/cache/' . sha1($cmd))) {
+            $gitTags = file_get_contents($f);
+        } else {
+            $gitTags = static::runProcess($cmd);
+            file_put_contents($f, $gitTags);
+        }
 
         $tags = [];
         foreach(explode("\n", trim($gitTags)) as $tagLine) {

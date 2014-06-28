@@ -27,7 +27,7 @@ $converter = new Bower2Composer();
 
 $composerPackages = [];
 
-$limit = 100;
+$limit = 250;
 foreach($bowerJson as $package) {
     try {
 
