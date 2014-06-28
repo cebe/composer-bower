@@ -1,0 +1,12 @@
+{
+	"require": {
+		"bower-bower/10digit-invoices": "dev-master"
+	},
+
+	"repositories": [
+        {
+            "type": "composer",
+            "url": "https://raw.githubusercontent.com/cebe/composer-bower/master"
+        }
+	]
+}
