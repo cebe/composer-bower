@@ -26,6 +26,7 @@ class Bower2Composer
 
         // get git tags
         $tags = GitHelper::getTags($package['url']);
+        $limit = 10;
         foreach($tags as $tag) {
 
             // strip the release- prefix from tags if present
@@ -96,6 +97,10 @@ class Bower2Composer
             }
             // TODO resolutions
 
+
+            if ($limit-- <= 0) {
+                break;
+            }
         }
 
         return array($name, $packages);

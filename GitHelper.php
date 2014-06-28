@@ -40,7 +40,7 @@ class GitHelper
 
     public static function getFile($repo, $tag, $file)
     {
-        if (preg_match('~^(git|https)://github.com/([\w\d\-]+/[\w\d\-]+)(\.git)?$~', $repo, $matches)) {
+        if (preg_match('~^(git|https)://github.com/([\w\d\-\.]+/[\w\d\-\.]+?)(\.git)?$~i', $repo, $matches)) {
             $url = 'https://raw.githubusercontent.com/' . $matches[2] . '/' . $tag . '/' . $file;
             if (is_file($f = __DIR__ . '/cache/' . sha1($url))) {
                 return file_get_contents($f);

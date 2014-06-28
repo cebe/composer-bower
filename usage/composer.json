@@ -1,6 +1,6 @@
 {
 	"require": {
-		"bower-bower/10digit-invoices": "dev-master"
+		"bower/10digit-invoices": "dev-master"
 	},
 
 	"repositories": [
