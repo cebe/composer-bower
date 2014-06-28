@@ -52,6 +52,6 @@ foreach($bowerJson as $package) {
 
 //print_r($composerPackages);
 
-echo json_encode($composerPackages);
+echo json_encode(['packages' => $composerPackages]);
 
 
