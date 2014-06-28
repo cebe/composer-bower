@@ -1,3 +1,4 @@
 /vendor
 /usage/vendor
+/usage/composer.lock
 /composer.lock
