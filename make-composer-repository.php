@@ -27,16 +27,25 @@ $converter = new Bower2Composer();
 
 $composerPackages = [];
 
-$limit = 250;
+$pCount = 0;
+$vCount = 0;
+$eCount = 0;
+
+$limit = 600;
 foreach($bowerJson as $package) {
+    fwrite(STDERR, "Converting {$package['name']}...\n");
     try {
 
         list($name, $packages) = $converter->convert($package);
         $composerPackages[$name] = $packages;
 
+        $pCount++;
+        $vCount += count($packages);
+
     } catch(\Exception $e) {
         fwrite(STDERR, 'failed to convert package: ' . $package['name']);
         fwrite(STDERR, $e->getMessage() . "\n");
+        $eCount++;
         continue;
     }
 
@@ -49,4 +58,4 @@ foreach($bowerJson as $package) {
 
 echo json_encode(['packages' => $composerPackages]);
 
-
+fwrite(STDERR, "\nadded $pCount packages in $vCount versions. Failed to convert $eCount packages.\n\n");
