@@ -39,7 +39,7 @@ class ConvertController extends Controller
         $vCount = 0;
         $eCount = 0;
 
-        $limit = 1000;
+        $limit = 1500;
         foreach($bowerJson as $package) {
             $this->stderr("Converting {$package['name']}..." . ($this->verbose ? "\n" : ""), Console::BOLD);
             try {
