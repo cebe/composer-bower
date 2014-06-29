@@ -32,7 +32,7 @@ Add the repository to your composer.json:
 "repositories": [
         {
             "type": "composer",
-            "url": "https://raw.githubusercontent.com/cebe/composer-bower/master"
+            "url": "http://stuff.cebe.cc/composer-bower"
         }
 ]
 ```
