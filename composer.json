@@ -1,5 +1,7 @@
 {
     "require": {
-        "composer/composer": "*@dev"
+        "composer/composer": "@dev",
+		"yiisoft/yii2": "@dev",
+		"yiisoft/yii2-composer": "@dev"
     }
 }

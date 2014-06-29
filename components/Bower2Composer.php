@@ -5,13 +5,15 @@
  * @author Carsten Brandt <mail@cebe.cc>
  */
 
-namespace cebe\composer\bower;
+namespace cebe\composer\bower\components;
 
 
 use Composer\Package\Version\VersionParser;
+use yii\helpers\Console;
 
 class Bower2Composer
 {
+    public $out;
     protected $versionParser;
 
 
@@ -25,6 +27,7 @@ class Bower2Composer
         $packages = [];
 
         // get git tags
+        $this->out->out("fetching tags...\n", "ft.");
         $tags = GitHelper::getTags($package['url']);
         $limit = 10;
         foreach($tags as $tag) {
@@ -33,10 +36,11 @@ class Bower2Composer
             $tag[1] = str_replace('release-', '', $tag[1]);
 
             if (!$parsedTag = $this->validateTag($tag[1])) {
-                fwrite(STDERR, "Skipped tag $tag[1], invalid tag name.\n");
+                $this->out->out("Skipped tag $tag[1], invalid tag name.\n", 'S', [Console::FG_YELLOW]);
                 continue;
             }
 
+//            $this->out->out("fetching bower.json...\n", "fb.");
             $bowerJson = $this->getBowerJson($package['url'], $tag[1]);
 
             // make sure tag packages have no -dev flag
@@ -64,38 +68,45 @@ class Bower2Composer
                 "require" => [], // TODO
             ];
 
-            if (isset($bowerJson['description'])) {
-                $packages[$tag[1]]['description'] = $bowerJson['description'];
-            }
-            if (isset($bowerJson['keywords'])) {
-                $packages[$tag[1]]['keywords'] = (array)$bowerJson['keywords'];
-            }
-            if (isset($bowerJson['license'])) {
-                $packages[$tag[1]]['license'] = (array)$bowerJson['license'];
-            }
-            // TODO skip if private
-            // TODO authors
-            // TODO homepage
-            // TODO repository
-            if (isset($bowerJson['main'])) {
-                $packages[$tag[1]]['extra']['bower-main'] = $bowerJson['main'];
-            }
-            if (isset($bowerJson['ignore'])) {
-                $packages[$tag[1]]['extra']['bower-ignore'] = $bowerJson['ignore'];
-            }
-            if (isset($bowerJson['dependencies']) && is_array($bowerJson['dependencies'])) {
-                foreach($bowerJson['dependencies'] as $dep => $version) {
-                    $packages[$tag[1]]['require'][$this->convertName($dep)] = $this->convertVersionConstraint($version);
+            if ($bowerJson === false) {
+
+                $this->out->out("Added tag $tag[1] without bower.json.\n", '+', [Console::FG_GREEN]);
+            } else {
+                if (isset($bowerJson['description'])) {
+                    $packages[$tag[1]]['description'] = $bowerJson['description'];
                 }
-                // TODO resolve repo name as verion
-            }
-            if (isset($bowerJson['devDependencies']) && is_array($bowerJson['devDependencies'])) {
-                foreach($bowerJson['devDependencies'] as $dep => $version) {
-                    $packages[$tag[1]]['require-dev'][$this->convertName($dep)] = $this->convertVersionConstraint($version);
+                if (isset($bowerJson['keywords'])) {
+                    $packages[$tag[1]]['keywords'] = (array)$bowerJson['keywords'];
                 }
-                // TODO resolve repo name as verion
+                if (isset($bowerJson['license'])) {
+                    $packages[$tag[1]]['license'] = (array)$bowerJson['license'];
+                }
+                // TODO skip if private
+                // TODO authors
+                // TODO homepage
+                // TODO repository
+                if (isset($bowerJson['main'])) {
+                    $packages[$tag[1]]['extra']['bower-main'] = $bowerJson['main'];
+                }
+                if (isset($bowerJson['ignore'])) {
+                    $packages[$tag[1]]['extra']['bower-ignore'] = $bowerJson['ignore'];
+                }
+                if (isset($bowerJson['dependencies']) && is_array($bowerJson['dependencies'])) {
+                    foreach($bowerJson['dependencies'] as $dep => $version) {
+                        $packages[$tag[1]]['require'][$this->convertName($dep)] = $this->convertVersionConstraint($version);
+                    }
+                    // TODO resolve repo name as verion
+                }
+                if (isset($bowerJson['devDependencies']) && is_array($bowerJson['devDependencies'])) {
+                    foreach($bowerJson['devDependencies'] as $dep => $version) {
+                        $packages[$tag[1]]['require-dev'][$this->convertName($dep)] = $this->convertVersionConstraint($version);
+                    }
+                    // TODO resolve repo name as verion
+                }
+                // TODO resolutions
+
+                $this->out->out("Added tag $tag[1] with bower.json info.\n", '+', [Console::BOLD, Console::FG_GREEN]);
             }
-            // TODO resolutions
 
 
             if ($limit-- <= 0) {
@@ -123,7 +134,7 @@ class Bower2Composer
         try {
             return json_decode(Githelper::getFile($repo, $tag, 'bower.json'), true);
         } catch(\Exception $e) {
-            fwrite(STDERR, $e->getMessage(). ", Skipping tag $tag.\n");
+            $this->out->out($e->getMessage(). ", no bower.json for tag $tag.\n", '', []);
         }
         return false;
     }

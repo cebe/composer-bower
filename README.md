@@ -7,5 +7,12 @@ Usage
 -----
 
 ```
-php make-composer-repository.php > packages.json
+./cli convert > packages.json
 ```
+
+or
+
+```
+./cli convert --verbose > packages.json
+```
+

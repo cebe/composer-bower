@@ -5,7 +5,7 @@
  * @author Carsten Brandt <mail@cebe.cc>
  */
 
-namespace cebe\composer\bower;
+namespace cebe\composer\bower\components;
 
 
 use Composer\Package\Version\VersionParser;
@@ -22,7 +22,7 @@ class GitHelper
     public static function getTags($repo)
     {
         $cmd = 'git ls-remote --tags --heads ' . escapeshellarg($repo);
-        if (is_file($f = __DIR__ . '/cache/' . sha1($cmd))) {
+        if (is_file($f = __DIR__ . '/../cache/' . sha1($cmd))) {
             $gitTags = file_get_contents($f);
         } else {
             $gitTags = static::runProcess($cmd);
@@ -48,7 +48,7 @@ class GitHelper
     {
         if (preg_match('~^(git|https)://github.com/([\w\d\-\.]+/[\w\d\-\.]+?)(\.git)?$~i', $repo, $matches)) {
             $url = 'https://raw.githubusercontent.com/' . $matches[2] . '/' . $tag . '/' . $file;
-            if (is_file($f = __DIR__ . '/cache/' . sha1($url))) {
+            if (is_file($f = __DIR__ . '/../cache/' . sha1($url))) {
                 return file_get_contents($f);
             } else {
                 $c = file_get_contents($url);
