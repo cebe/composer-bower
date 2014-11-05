@@ -3,7 +3,8 @@ composer-bower
 
 Proof of concept for a repository to install bower packages using composer.
 
-**This project will not be continued, there is a much better solution. Use the [composer asset plugin] instead.**
+**DEPRECATED: This project will not be continued, there is a much better solution.  
+Use the [composer asset plugin] instead.**
 
 [composer asset plugin]: https://github.com/francoispluchino/composer-asset-plugin
 
